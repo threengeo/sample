@@ -233,6 +233,7 @@
 
             // 지도에 선을 표시합니다
             polyline.setMap(map);
+            
         }
     </script>
 </body>
