@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insert title here</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      button {
+        width: 100%;
+      }
+    </style>
+    <script>
+      // process and send message
+      function toNative() {
+        count = document.getElementById("count").value;
+        const sendData = { message: count };
+        window.webkit.messageHandlers.NAVITE_JAVASCRIPT.postMessage(sendData);
+      }
+
+      // receive and procoess and response
+      function fromNative(data) {
+        document.getElementById("count").value = Number(data) + 1;
+        return "from native data processing completed";
+      }
+    </script>
+  </head>
+  <body>
+    <button onclick="toNative();">a</button>
+    <input id="count" value="0" />
+  </body>
+</html>

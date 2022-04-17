@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="output.css" rel="stylesheet" />
+        <title>네이버지도</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script
+            type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=l2ehbyigs0&submodules=geocoder"
+        ></script>
+    </head>
+    <body>
+        <div class="w-full p-4">
+            <h1 class="text-3xl font-bold text-center mb-4">카카오 지도</h1>
+            <div class="relative h-screen">
+                <div id="map" class="w-full h-2/3"></div>
+                <div class="mt-12">
+                    <h2 class="text-2xl text-indigo-900 font-bold">
+                        네이티브에서 입력한 내용
+                    </h2>
+                    <input
+                        class="w-full border border-gray-500 rounded-lg px-3 py-2"
+                        name="native_input"
+                        id="native_input"
+                        value=""
+                    />
+                </div>
+                <a
+                    id="current_location_button"
+                    class="z-50 absolute top-4 right-4 bg-indigo-700 rounded-full p-1 hover:cursor-pointer"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                </a>
+            </div>
+            <!-- <script
+                type="text/javascript"
+                src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a65740e57cd765c8a3c629d6e39a78dc"
+            ></script> -->
+            <!-- <script>
+                naver.maps.Service.geocode(
+                    {
+                        query: '제주 제주시 광양9길 10 제주시청',
+                    },
+                    function (status, response) {
+                        if (status !== naver.maps.Service.Status.OK) {
+                            return alert('Something wrong!');
+                        }
+
+                        var result = response.v2, // 검색 결과의 컨테이너
+                            items = result.addresses; // 검색 결과의 배열
+
+                        console.log(items);
+                    }
+                );
+            </script> -->
+
+            <script>
+                const person = new Proxy(
+                    {},
+                    {
+                        get: function (target, prop) {
+                            return target[prop] + ' 호출 가로채기!!';
+                        },
+                    }
+                );
+
+                person.name = 'https://naveropenapi.apigw.ntruss.com';
+                console.log(person.name);
+
+                axios.defaults.baseURL =
+                    'https://naveropenapi.apigw.ntruss.com';
+
+                axios
+                    .get(
+                        '/map-direction/v1/driving?start=126.4959513,33.5059364&goal=126.5311380,33.4995680&option=trafast',
+                        {
+                            headers: {
+                                'X-NCP-APIGW-API-KEY-ID': 'l2ehbyigs0',
+                                'X-NCP-APIGW-API-KEY':
+                                    'udXDMQRPPcDoYmvENABrurUBm4JWQblC4g5VJuxB',
+                            },
+                        }
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                    });
+            </script>
+        </div>
+    </body>
+</html>

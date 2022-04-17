@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>카카오 REST Api</title>
+        <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    </head>
+    <body>
+        <script>
+            // axios
+            //     .get(
+            //         'https://dapi.kakao.com/v2/local/search/address.json?query=전북 삼성동 100',
+            //         {
+            //             headers: {
+            //                 Authorization:
+            //                     'KakaoAK 81e17e3728ca6c93d36f8116a6aa94c9',
+            //             },
+            //         }
+            //     )
+            //     .then((res) => {
+            //         console.log(res.data);
+            //     });
+
+            fetch(
+                'https://dapi.kakao.com/v2/local/search/address.json?query=전북 삼성동 100',
+                {
+                    headers: {
+                        Authorization:
+                            'KakaoAK 81e17e3728ca6c93d36f8116a6aa94c9',
+                    },
+                }
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => console.log('error:', error));
+        </script>
+    </body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="output.css" rel="stylesheet" />
+    <title>카카오지도</title>
+  </head>
+  <body>
+    <div class="w-full p-4">
+      <h1 class="text-3xl font-bold text-center mb-4">카카오 지도</h1>
+      <div class="relative h-screen">
+        <div id="map" class="w-full h-2/3"></div>
+        <div class="mt-12">
+          <h2 class="text-2xl text-indigo-900 font-bold">
+            네이티브에서 입력한 내용
+          </h2>
+          <input
+            class="w-full border border-gray-500 rounded-lg px-3 py-2"
+            name="native_input"
+            id="native_input"
+            value=""
+          />
+        </div>
+        <a
+          id="current_location_button"
+          class="z-50 absolute top-4 right-4 bg-indigo-700 rounded-full p-1 hover:cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </a>
+      </div>
+      <script
+        type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a65740e57cd765c8a3c629d6e39a78dc"
+      ></script>
+      <script>
+        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+          mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3, // 지도의 확대 레벨
+          };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+        var currentLocationButton = document.getElementById(
+          "current_location_button"
+        );
+        currentLocationButton.addEventListener("click", onCurrentLocationClick);
+
+        function onCurrentLocationClick() {
+          // currentLocation();
+          // gotoLocation(33.450606, 126.5729558);
+          // alert("JS -> Native");
+          jsToNativeEventCall();
+        }
+
+        function responseGps(lat, lon) {
+          var locPosition = new kakao.maps.LatLng(lat, lon);
+          displayMarker(locPosition, "");
+        }
+
+        // 현재 위치로 이동
+        function currentLocation() {
+          // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
+          if (navigator.geolocation) {
+            // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+            navigator.geolocation.getCurrentPosition(function (position) {
+              var lat = position.coords.latitude, // 위도
+                lon = position.coords.longitude; // 경도
+
+              console.log(lat, lon);
+
+              var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                message = '<div style="padding:5px;">현위치</div>'; // 인포윈도우에 표시될 내용입니다
+
+              // 마커와 인포윈도우를 표시합니다
+              displayMarker(locPosition, message);
+            });
+          } else {
+            // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+            var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
+              message = "geolocation을 사용할수 없어요..";
+
+            displayMarker(locPosition, message);
+          }
+        }
+
+        // 지도에 마커와 인포윈도우를 표시하는 함수입니다
+        function displayMarker(locPosition, message) {
+          // 마커를 생성합니다
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: locPosition,
+          });
+
+          var iwContent = message, // 인포윈도우에 표시할 내용
+            iwRemoveable = true;
+
+          // 인포윈도우를 생성합니다
+          var infowindow = new kakao.maps.InfoWindow({
+            content: iwContent,
+            removable: iwRemoveable,
+          });
+
+          // 인포윈도우를 마커위에 표시합니다
+          // infowindow.open(map, marker);
+
+          // 지도 중심좌표를 접속위치로 변경합니다
+          map.setCenter(locPosition);
+        }
+
+        function jsToNativeEventCall() {
+          // console.log('jsToNativeEventCall : $message');
+          // let messageToSend = document.getElementById("messageToSend")
+          // const sendData = { message: messageToSend.value };
+          const sendData = { message: "messageToSend" };
+          // callbackHandler 가 브릿지 이름
+
+          try {
+            // 메시지에 아 값도 없으면 요철을 받을 수  없다.
+            window.webkit.messageHandlers.requestGps.postMessage(sendData);
+            // messageToSend.value = "";
+          } catch (err) {
+            alert(err);
+          }
+        }
+
+        // 네이티브 에서 호출할 메소드
+        function nativeToJsEventCall(message) {
+          // console.log('nativeToJsEventCall : $message');
+          let nativeInput = document.getElementById("native_input");
+          nativeInput.value = message;
+        }
+      </script>
+    </div>
+  </body>
+</html>
